@@ -4,7 +4,8 @@
   "description": "An implementation of the german game 'Stadt-Land-Fluss'",
   "main": "index.js",
   "scripts": {
-    "start": "budo index.js:bundle.js",
+    "postinstall": "browserify index.js | uglifyjs > game.js",
+    "start": "budo index.js --serve game.js --live -- --plugin [ bundle-minify ]",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,7 +19,10 @@
   },
   "homepage": "https://github.com/mee4895/MySLF#readme",
   "devDependencies": {
-    "budo": "^10.0.4"
+    "budo": "^10.0.4",
+    "bundle-minify": "^1.0.0",
+    "browserify": "^15.0.0",
+    "uglify-js": "^3.3.4"
   },
   "dependencies": {
     "simple-peer": "^8.2.0"
