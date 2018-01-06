@@ -1,2 +1,2 @@
 # MySLF
-A implementation of the german game 'Stadt-Land-Fluss'
+An implementation of the german game 'Stadt-Land-Fluss'

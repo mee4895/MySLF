@@ -1,0 +1,26 @@
+{
+  "name": "myslf",
+  "version": "0.0.1",
+  "description": "An implementation of the german game 'Stadt-Land-Fluss'",
+  "main": "index.js",
+  "scripts": {
+    "start": "budo index.js:bundle.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mee4895/MySLF.git"
+  },
+  "author": "Tobias Wältken <tobias@waeltken.info>",
+  "license": "CC-BY-NC-4.0",
+  "bugs": {
+    "url": "https://github.com/mee4895/MySLF/issues"
+  },
+  "homepage": "https://github.com/mee4895/MySLF#readme",
+  "devDependencies": {
+    "budo": "^10.0.4"
+  },
+  "dependencies": {
+    "simple-peer": "^8.2.0"
+  }
+}
