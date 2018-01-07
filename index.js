@@ -1,8 +1,8 @@
-var Peer = require('simple-peer');
-var mqtt = require('mqtt');
+var config = require('./config.js');
+var Peer = require('peerjs');
 
 document.getElementById('create').addEventListener('click', function() {
-	let lobbyId = createLobby();
+	var lobbyId = createLobby();
 	document.getElementById('lobbycode').textContent = 'Lobby: ' + lobbyId;
 	document.getElementById('create').disabled = true;
 	document.getElementById('lobbyid').disabled = true;
@@ -16,121 +16,50 @@ document.getElementById('join').addEventListener('click', function() {
 	document.getElementById('join').disabled = true;
 });
 
-var client = mqtt.connect('ws://test.mosquitto.org:8080');
-client.on('connect', function () {
-	console.log('connected to mqtt');
+document.getElementById('send').addEventListener('click', function () {
+	var yourMessage = document.getElementById('yourMessage').value;
+	if (host) {
+		host.send({
+			msg: yourMessage
+		});
+	} else {
+		peers[0].send({
+			msg: yourMessage
+		});
+	}
 });
 
-dssSend = function(dssChannel, dssMsg, callback) {
-	client.publish(dssChannel, JSON.stringify(dssMsg));
-	callback();
-};
-dssRecieve = function(dssChannel, msgCallback) {
-	client.on('message', function (topic, message) {
-		msgCallback(JSON.parse(message));
-	});
-	client.subscribe(dssChannel);
-};
-
 var peers = [];
-addPeer = function(dssChannel, trackingId, userId) {
-	var peer = {
-		userId: userId,
-		trackingId: trackingId,
-		online: false,
-		connection: new Peer({
-			initiator: true,
-			trickle: false
-		})
-	};
+createLobby = function() {
+	var lobbyId = Math.random().toString(36).substring(3, 8);
+	var peer = new Peer('myslf-' + lobbyId, {key: config.apiKey});
 
-	peer.connection.on('signal', function(data) {
-		dssSend(dssChannel, {
-			type: 'peer',
-			trackingId: trackingId,
-			initiator: true,
-			data: data
-		}, function(err, dssMsg) {
-			console.log('awaiting peer');
+	peer.on('connection', function(conn) {
+		peers.push(conn);
+
+		conn.on('open', function() {
+			conn.send({
+				msg: 'Hello from Server'
+			});
+		});
+		conn.on('data', function(data){
+			document.getElementById('messages').textContent += data.msg + '\n';
 		});
 	});
-	peer.connection.on('connect', function() {
-		peer.trackingId = undefined;
-		peer.online = true;
-		peer.connection.send('Hi from Server');
-	});
-	peer.connection.on('data', function(data) {
-		console.log(data);
-	});
 
-	peers.push(peer);
-};
-
-createLobby = function() {
-	let lobbyId = Math.random().toString(36).substring(3, 8);
-	let dssChannel = 'myslf/' + lobbyId;
-	dssRecieve(dssChannel, function(dssMsg) {
-		if (dssMsg.type === 'welcome') {
-			if (!peers.find(peer => peer.trackingId === dssMsg.trackingId)) {
-				dssSend(dssChannel, {
-					type: 'confirm',
-					trackingId: dssMsg.trackingId
-				}, function(err, dssMsg) {
-					console.log(err);
-					console.log(dssMsg);
-				});
-				addPeer(dssChannel, dssMsg.trackingId, dssMsg.userId);
-			}
-		} else if (dssMsg.type === 'peer') {
-			if (!dssMsg.initiator) {
-				peers.find(peer => peer.trackingId === dssMsg.trackingId).connection.signal(dssMsg.data);
-				console.log(dssMsg.data);
-			}
-		}
-	});
 	return lobbyId;
 };
 
-var host = {};
+var host;
 joinLobby = function(lobbyId) {
-	let dssChannel = 'myslf/' + lobbyId;
-	let trackingId =  Math.random().toString(36).substring(3, 8);
-	var waitForKey = false;
-	dssRecieve(dssChannel, function(dssMsg) {
-		if (dssMsg.trackingId == trackingId) {
-			if ((!waitForKey) && dssMsg.type === 'confirm') {
-				waitForKey = true;
-				host['connection'] = new Peer({
-					initiator: false,
-					trickle: false
-				});
-
-				host.connection.on('signal', function(data) {
-					dssSend(dssChannel, {
-						type: 'peer',
-						trackingId: trackingId,
-						initiator: false,
-						data: data
-					}, function(err, dssMsg) {
-						console.log('awaiting peer');
-					});
-				});
-				host.connection.on('connect', function() {
-					host.connection.send('Hi from Client');
-				});
-				host.connection.on('data', function(data) {
-					console.log(data);
-				});
-			} else if (waitForKey && dssMsg.type === 'peer') {
-				host.connection.signal(dssMsg.data);
-			}
-		}
+	var peer = new Peer({key: config.apiKey});
+	host = peer.connect('myslf-' + lobbyId);
+	host.on('open', function() {
+		host.send({
+			msg: 'Hello from Client'
+		});
 	});
-	dssSend(dssChannel, {
-		type: 'welcome',
-		trackingId: trackingId,
-		userId: 'Klaus'
-	}, function(err, dssMsg) {
-		console.log('contacting server');
+	host.on('data', function(data) {
+		document.getElementById('messages').textContent += data.msg + '\n';
 	});
 };

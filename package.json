@@ -24,7 +24,6 @@
     "uglify-js": "^3.3.4"
   },
   "dependencies": {
-    "mqtt": "^2.15.0",
-    "simple-peer": "^8.2.0"
+    "peerjs": "^0.3.14"
   }
 }
