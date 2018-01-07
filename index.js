@@ -133,5 +133,4 @@ joinLobby = function(lobbyId) {
 	}, function(err, dssMsg) {
 		console.log('contacting server');
 	});
-	console.log('4')
 };
