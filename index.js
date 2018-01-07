@@ -91,7 +91,7 @@ createLobby = function() {
 	return lobbyId;
 };
 
-var host;
+var host = {};
 joinLobby = function(lobbyId) {
 	let dssChannel = 'myslf/' + lobbyId;
 	let trackingId =  Math.random().toString(36).substring(3, 8);
@@ -100,12 +100,12 @@ joinLobby = function(lobbyId) {
 		if (dssMsg.trackingId == trackingId) {
 			if ((!waitForKey) && dssMsg.type === 'confirm') {
 				waitForKey = true;
-				host = new Peer({
+				host['connection'] = new Peer({
 					initiator: false,
 					trickle: false
 				});
 
-				host.on('signal', function(data) {
+				host.connection.on('signal', function(data) {
 					dssSend(dssChannel, {
 						type: 'peer',
 						trackingId: trackingId,
@@ -115,14 +115,14 @@ joinLobby = function(lobbyId) {
 						console.log('awaiting peer');
 					});
 				});
-				host.on('connect', function() {
+				host.connection.on('connect', function() {
 					host.connection.send('Hi from Client');
 				});
-				host.on('data', function(data) {
+				host.connection.on('data', function(data) {
 					console.log(data);
 				});
 			} else if (waitForKey && dssMsg.type === 'peer') {
-				host.signal(dssMsg.data);
+				host.connection.signal(dssMsg.data);
 			}
 		}
 	});
