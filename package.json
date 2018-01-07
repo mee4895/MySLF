@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "browserify index.js | uglifyjs > game.js",
-    "start": "budo index.js --serve game.js --live -- --plugin [ bundle-minify ]",
+    "start": "budo index.js --serve game.js --live",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,11 +20,11 @@
   "homepage": "https://github.com/mee4895/MySLF#readme",
   "devDependencies": {
     "budo": "^10.0.4",
-    "bundle-minify": "^1.0.0",
     "browserify": "^15.0.0",
     "uglify-js": "^3.3.4"
   },
   "dependencies": {
+    "mqtt": "^2.15.0",
     "simple-peer": "^8.2.0"
   }
 }

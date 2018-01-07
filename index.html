@@ -5,18 +5,19 @@
 		<title>Stadt-Land-Fluss</title>
 	</head>
 	<body>
-		<label>Your ID:</label><br/>
-		<textarea id="yourId"></textarea><br/>
-		<label>Other ID:</label><br/>
-		<textarea id="otherId"></textarea><br/>
-		<button id="connect">connect</button><br/>
+		<button id="create">Create Lobby</button>
+		<label id="lobbycode">Lobby:</label><br/>
+		<label>Join Lobby:</label>
+		<input type="text" id="lobbyid"></input>
+		<button id="join">Join</button><br/>
+
+		<br/>
 
 		<label>Enter Message:</label><br/>
-		<textarea id="yourMessage"></textarea><br/>
+		<textarea id="yourMessage"></textarea>
 		<button id="send">send</button><br/>
 		<pre id="messages"></pre>
 
-		<script src="//dweet.io/client/dweet.io.min.js"></script>
 		<script src="game.js"></script>
 	</body>
 </html>
