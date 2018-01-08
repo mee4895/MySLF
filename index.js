@@ -23,8 +23,10 @@ document.getElementById('send').addEventListener('click', function () {
 			msg: yourMessage
 		});
 	} else {
-		peers[0].send({
-			msg: yourMessage
+		peers.forEach(function(peer) {
+			peer.send({
+				msg: yourMessage
+			});
 		});
 	}
 });
