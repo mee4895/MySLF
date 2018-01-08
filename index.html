@@ -6,18 +6,72 @@
 		<link rel="stylesheet" href="game.css">
 	</head>
 	<body>
-		<button id="create">Create Lobby</button>
-		<label id="lobbycode">Lobby:</label><br/>
-		<label>Join Lobby:</label>
-		<input type="text" id="lobbyid"></input>
-		<button id="join">Join</button><br/>
-
-		<br/>
-
-		<label>Enter Message:</label><br/>
-		<textarea id="yourMessage"></textarea>
-		<button id="send">send</button><br/>
-		<pre id="messages"></pre>
+		<header>
+			<div class="navbar navbar-dark bg-dark mb-4">
+				<div class="container d-flex justify-content-between">
+					<a href="#" class="navbar-brand">Stadt-Land-Fluss</a>
+					<label class="text-light" id="lobbycode">Lobby: _____</label>
+				</div>
+			</div>
+		</header>
+		<main>
+			<div class="container">
+				<div class="jumbotron">
+					<h1 class="mb-4">Lobby Auswahl:</h1>
+					<div class="card-deck">
+						<div class="card">
+							<div class="card-body pb-0">
+								<h5 class="card-title">Einem Spiel beitreten</h5>
+								<form>
+									<div class="form-group">
+										<input type="text" class="form-control" id="lobbyid">
+										<small class="form-text text-muted">Ein 5 stelliger Lobby Code aus Zahlen und Buchstaben.</small>
+									</div>
+								</form>
+							</div>
+							<div class="card-footer bg-transparent border-0 pt-0" style="padding-bottom: 1.25rem;">
+								<button type="button" id="join" class="btn btn-block btn-success">Verbinden</button>
+							</div>
+						</div>
+						<div class="my-auto">
+							oder
+						</div>
+						<div class="card">
+							<div class="card-body pb-0">
+								<h5 class="card-title">Ein Spiel erstellen</h5>
+								<p>Es wird eine Lobby erstellt in der sich alles Einstellen lässt. Desweiteren kommt hier noch sehr viel Beispiel Text.</p>
+							</div>
+							<div class="card-footer bg-transparent border-0 pt-0" style="padding-bottom: 1.25rem;">
+								<button type="button" id="create" class="btn btn-block btn-success">Erstellen</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+		<footer class="footer bg-dark">
+			<div id="chat" class="card rounded-top border-dark">
+				<div class="card-header text-white bg-dark py-2">Chat</div>
+				<div class="card-body p-2" style="overflow-y: scroll;">
+					<pre id="messages" class="mb-0" style="line-height: 125%"></pre>
+				</div>
+				<div class="card-footer border-dark p-2">
+					<form class="form-inline">
+						<div class="input-group input-group-sm w-100">
+							<input type="text" id="yourMessage" class="form-control" placeholder="Chat:">
+							<div class="input-group-append">
+								<button type="button" id="send" class="btn btn-outline-secondary">&#x226B;</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="d-flex justify-content-between">
+				<button type="button" id="toggleChat" class="btn btn-secondary btn-sm text-dark ml-3" style="height: 32px">Chat</button>
+				<label class="text-muted bx-auto">CC BY-NC 4.0</label>
+				<div id="paceholder"></div>
+			</div>
+		</footer>
 
 		<script src="game.js"></script>
 	</body>

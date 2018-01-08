@@ -64,5 +64,7 @@ joinLobby = function(lobbyId) {
 	});
 	host.on('data', function(data) {
 		document.getElementById('messages').textContent += data.msg + '\n';
+		var div = document.getElementById('messages').parentElement;
+		div.scrollTop = div.scrollHeight - div.clientHeight;
 	});
 };
