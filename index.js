@@ -2,6 +2,13 @@ require('./app.css');
 var config = require('./config.js');
 var Peer = require('peerjs');
 
+document.getElementById('toggleChat').addEventListener('click', function() {
+	document.getElementById('chat').hidden = !document.getElementById('chat').hidden;
+});
+document.getElementById('chat-header').addEventListener('click', function() {
+	document.getElementById('chat').hidden = true;
+});
+
 document.getElementById('create').addEventListener('click', function() {
 	var lobbyId = createLobby();
 	document.getElementById('lobbycode').textContent = 'Lobby: ' + lobbyId;
