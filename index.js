@@ -12,16 +12,13 @@ document.getElementById('chat-header').addEventListener('click', function() {
 document.getElementById('create').addEventListener('click', function() {
 	var lobbyId = createLobby();
 	document.getElementById('lobbycode').textContent = 'Lobby: ' + lobbyId;
-	document.getElementById('create').disabled = true;
-	document.getElementById('lobbyid').disabled = true;
-	document.getElementById('join').disabled = true;
+	document.getElementById('lobbyselect').hidden = true;
 });
 
 document.getElementById('join').addEventListener('click', function() {
 	joinLobby(document.getElementById('lobbyid').value);
-	document.getElementById('create').disabled = true;
-	document.getElementById('lobbyid').disabled = true;
-	document.getElementById('join').disabled = true;
+	document.getElementById('lobbycode').textContent = 'Lobby: ' + document.getElementById('lobbyid').value;
+	document.getElementById('lobbyselect').hidden = true;
 });
 
 document.getElementById('send').addEventListener('click', function () {
