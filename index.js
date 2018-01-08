@@ -70,14 +70,14 @@ _('send').addEventListener('click', function () {
 	if (host) {
 		host.send({
 			type: 'message',
-			name: 'Player',
+			name: _('username').textContent,
 			msg: yourMessage
 		});
 	} else if (peers.length != 0) {
 		peers.forEach(function(peer) {
 			peer.send({
 				type: 'message',
-				name: 'Host',
+				name: _('username').textContent,
 				msg: yourMessage
 			});
 		});
