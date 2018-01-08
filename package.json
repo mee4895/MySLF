@@ -4,6 +4,7 @@
   "description": "An implementation of the german game 'Stadt-Land-Fluss'",
   "main": "index.js",
   "scripts": {
+    "install": "bash install.sh",
     "postinstall": "browserify index.js | uglifyjs > game.js",
     "start": "budo index.js --serve game.js --live",
     "test": "echo \"Error: no test specified\" && exit 1"
