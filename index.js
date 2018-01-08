@@ -1,3 +1,4 @@
+require('./app.css');
 var config = require('./config.js');
 var Peer = require('peerjs');
 

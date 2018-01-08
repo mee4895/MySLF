@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "install": "bash install.sh",
-    "postinstall": "browserify index.js | uglifyjs > game.js",
-    "start": "budo index.js --serve game.js --live",
+    "postinstall": "browserify -t browserify-css index.js | uglifyjs > game.js",
+    "start": "budo index.js --serve game.js --live -- -t browserify-css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,11 +20,18 @@
   },
   "homepage": "https://github.com/mee4895/MySLF#readme",
   "devDependencies": {
-    "budo": "^10.0.4",
     "browserify": "^15.0.0",
+    "browserify-css": "^0.14.0",
+    "budo": "^10.0.4",
     "uglify-js": "^3.3.4"
   },
   "dependencies": {
+    "bootstrap": "^4.0.0-beta.3",
     "peerjs": "^0.3.14"
+  },
+  "browserify-css": {
+    "autoInject": false,
+    "minify": true,
+    "output": "game.css"
   }
 }
