@@ -10,40 +10,71 @@
 			<div class="navbar navbar-dark bg-dark mb-4">
 				<div class="container d-flex justify-content-between">
 					<a href="#" class="navbar-brand">Stadt-Land-Fluss</a>
-					<label class="text-light" id="lobbycode">Lobby: _____</label>
+					<div>
+						<form class="form-inline">
+							<label class="text-light mr-1">Username:</label>
+							<label id="username" class="text-light mr-1"></label>
+							<input type="text" id="usernameInput" class="form-control mr-1" hidden>
+							<button type="button" id="changeUsername" class="btn btn-secondary">&#x021B5;</button>
+						</form>
+					</div>
 				</div>
 			</div>
 		</header>
-		<main>
-			<div class="container">
-				<div id="lobbyselect" class="jumbotron">
-					<h1 class="mb-4">Lobby Auswahl:</h1>
-					<div class="card-deck">
-						<div class="card">
-							<div class="card-body pb-0">
-								<h5 class="card-title">Einem Spiel beitreten</h5>
-								<form>
-									<div class="form-group">
-										<input type="text" class="form-control" id="lobbyid">
-										<small class="form-text text-muted">Ein 5 stelliger Lobby Code aus Zahlen und Buchstaben.</small>
-									</div>
-								</form>
-							</div>
-							<div class="card-footer bg-transparent border-0 pt-0" style="padding-bottom: 1.25rem;">
-								<button type="button" id="join" class="btn btn-block btn-success">Verbinden</button>
-							</div>
+		<main class="container">
+			<div id="lobbyselect" class="jumbotron">
+				<h1 class="mb-4">Lobby Auswahl:</h1>
+				<div class="card-deck">
+					<div class="card">
+						<div class="card-body pb-0">
+							<h5 class="card-title">Einem Spiel beitreten</h5>
+							<form>
+								<div class="form-group">
+									<input type="text" class="form-control" id="lobbyid">
+									<small class="form-text text-muted">Ein 5 stelliger Lobby Code aus Zahlen und Buchstaben.</small>
+								</div>
+							</form>
 						</div>
-						<div class="my-auto">
-							oder
+						<div class="card-footer bg-transparent border-0 pt-0" style="padding-bottom: 1.25rem;">
+							<button type="button" id="join" class="btn btn-block btn-success">Verbinden</button>
 						</div>
-						<div class="card">
-							<div class="card-body pb-0">
-								<h5 class="card-title">Ein Spiel erstellen</h5>
-								<p>Es wird eine Lobby erstellt in der sich alles Einstellen lässt. Desweiteren kommt hier noch sehr viel Beispiel Text.</p>
-							</div>
-							<div class="card-footer bg-transparent border-0 pt-0" style="padding-bottom: 1.25rem;">
-								<button type="button" id="create" class="btn btn-block btn-success">Erstellen</button>
-							</div>
+					</div>
+					<div class="my-auto">
+						oder
+					</div>
+					<div class="card">
+						<div class="card-body pb-0">
+							<h5 class="card-title">Ein Spiel erstellen</h5>
+							<p>Es wird eine Lobby erstellt in der sich alles Einstellen lässt. Desweiteren kommt hier noch sehr viel Beispiel Text.</p>
+						</div>
+						<div class="card-footer bg-transparent border-0 pt-0" style="padding-bottom: 1.25rem;">
+							<button type="button" id="create" class="btn btn-block btn-success">Erstellen</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="lobby" class="jumbotron" hidden>
+				<h1 class="mb-4">
+					Lobby:
+					<small id="lobbycode" class="text-muted"></small>
+				</h1>
+				<div class="d-flex flex-row">
+					<div class="card" style="width: 10rem;">
+						<img class="card-img-top" src="profile-2092113.svg" alt="User">
+						<div class="card-body p-3">
+							<h6 class="card-title mb-0">Paul</h6>
+						</div>
+						<div class="card-footer">
+							<button type="button" class="btn btn-outline-primary btn-block" disabled>Host</button>
+						</div>
+					</div>
+					<div class="card" style="width: 10rem;">
+						<img class="card-img-top" src="profile-2092113.svg" alt="User">
+						<div class="card-body p-3">
+							<h6 class="card-title mb-0">Klaus</h6>
+						</div>
+						<div class="card-footer">
+							<a href="#" class="btn btn-outline-danger btn-block">Kick</a>
 						</div>
 					</div>
 				</div>
