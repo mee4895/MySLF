@@ -23,7 +23,7 @@
 		</header>
 		<main class="container">
 			<div id="lobbyselect" class="jumbotron">
-				<h1 class="mb-4">Lobby Auswahl:</h1>
+				<h1 class="ml-2 mb-4">Lobby Auswahl:</h1>
 				<div class="card-deck">
 					<div class="card">
 						<div class="card-body pb-0">
@@ -53,12 +53,12 @@
 					</div>
 				</div>
 			</div>
-			<div id="lobby" class="jumbotron" hidden>
-				<h1 class="mb-4">
+			<div id="lobby" class="jumbotron pb-4" hidden>
+				<h1 class="ml-2 mb-4">
 					Lobby:
 					<small id="lobbycode" class="text-muted"></small>
 				</h1>
-				<div id="peerlist" class="d-flex flex-row">
+				<div id="peerlist" class="d-flex flex-row mb-4">
 					<div class="card" style="width: 10rem;">
 						<img class="card-img-top" src="profile-2092113.svg" alt="User">
 						<div class="card-body p-3">
@@ -69,7 +69,11 @@
 						</div>
 					</div>
 				</div>
+				<h2 class="ml-2 mb-2">Settings:</h2>
+				<form id="gamesettings" class="form mb-4"></form>
+				<button id="startgame" class="btn btn-success btn-lg btn-block">Start Game</button>
 			</div>
+			<div class="game"></div>
 		</main>
 		<footer class="footer bg-dark">
 			<div id="chat" class="card rounded-top border-dark" hidden>
