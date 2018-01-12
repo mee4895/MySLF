@@ -59,6 +59,8 @@ _('send').addEventListener('click', function () {
 		name: _('username').textContent,
 		msg: _('yourMessage').value
 	}
+	_('yourMessage').value = null;
+	if (!message.msg) return;
 	if (hostConn) {
 		hostConn.send(message);
 	} else if (peers.length != 0) {

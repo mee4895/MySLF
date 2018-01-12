@@ -14,7 +14,7 @@
 						<form class="form-inline">
 							<label class="text-light mr-1">Username:</label>
 							<label id="username" class="text-light mr-1"></label>
-							<input type="text" id="usernameInput" class="form-control mr-1" hidden>
+							<input type="text" id="usernameInput" class="form-control mr-1" onkeydown = "if(event.keyCode == 13){ event.preventDefault(); document.getElementById('changeUsername').click(); }" hidden>
 							<button type="button" id="changeUsername" class="btn btn-secondary">&#x021B5;</button>
 						</form>
 					</div>
@@ -84,7 +84,7 @@
 				<div class="card-footer border-dark p-2">
 					<form class="form-inline">
 						<div class="input-group input-group-sm w-100">
-							<input type="text" id="yourMessage" class="form-control" placeholder="Chat:">
+							<input type="text" id="yourMessage" class="form-control" placeholder="Chat:" onkeydown = "if(event.keyCode == 13) { event.preventDefault(); document.getElementById('send').click(); } else if(event.keyCode == 27) { event.preventDefault(); document.getElementById('toggleChat').click(); }">
 							<div class="input-group-append">
 								<button type="button" id="send" class="btn btn-outline-secondary">&#x226B;</button>
 							</div>
