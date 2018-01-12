@@ -54,23 +54,19 @@ _('chat-header').addEventListener('click', function() {
 	_('chat').hidden = true;
 });
 _('send').addEventListener('click', function () {
-	var yourMessage = _('yourMessage').value;
-	if (hostConn) {
-		hostConn.send({
-			type: 'message',
-			name: _('username').textContent,
-			msg: yourMessage
-		});
-	} else if (peers.length != 0) {
-		broadcast({
-			type: 'message',
-			name: _('username').textContent,
-			msg: yourMessage
-		});
+	var message = {
+		type: 'message',
+		name: _('username').textContent,
+		msg: _('yourMessage').value
 	}
-	_('messages').textContent += 'Ich: ' + yourMessage + '\n';
+	if (hostConn) {
+		hostConn.send(message);
+	} else if (peers.length != 0) {
+		broadcast(message);
+	}
+	chatAddMessage(message);
 });
-chatAddMessage = function(data, hasname = true) {
+chatAddMessage = function(data, hasname) {
 	if (hasname) {
 		_('messages').textContent += data.name + ': ' + data.msg + '\n';
 	} else {
@@ -105,7 +101,7 @@ _('join').addEventListener('click', function() {
 });
 
 // Lobby
-addUser = function(userid, username = 'loading ...') {
+addUser = function(userid, username, kick) {
 	$('#peerlist').append(jquery('<div></div>', {
 		id: 'card-' + userid,
 		class: 'card',
@@ -121,16 +117,39 @@ addUser = function(userid, username = 'loading ...') {
 		class: 'card-title mb-0'
 	}).text(username))).append(jquery('<div></div>', {
 		class: 'card-footer'
-	}).append(jquery('<button></button>', {
+	}).append(kick ? jquery('<button></button>', {
 		type: 'button',
 		class: 'btn btn-outline-danger btn-block'
-	}).text('Kick'))));
+	}).text('Kick') : jquery('<button></button>', {
+		type: 'button',
+		class: 'btn btn-outline-success btn-block',
+		disabled: true
+	}).text('Player'))));
 };
 
 //
 // Server
 //
 var peers = [];
+getPeer = function(id) {
+	for(var i = 0; i < peers.length; i++) {
+		if(peers[i].id === id) {
+			return peers[i];
+		}
+	}
+};
+getPeers = function() {
+	var returnPeers = [];
+	for(var i = 0; i < peers.length; i++) {
+		if(peers[i].online) {
+			returnPeers.push({
+				id: peers[i].id,
+				name: peers[i].name
+			});
+		}
+	}
+	return returnPeers;
+}
 broadcast = function(data) {
 	peers.forEach(function(peer) {
 		peer.connection.send(data);
@@ -145,16 +164,17 @@ createLobby = function() {
 
 	host.on('connection', function(conn) {
 		var peer = {
-			userid: Math.random().toString(36).substring(3, 8),
+			id: Math.random().toString(36).substring(3, 8),
 			connection: conn
 		};
 
 		conn.on('open', function() {
-			addUser(peer.userid);
+			addUser(peer.id, 'loading ...', true);
 			conn.send({
 				type: 'welcome',
-				id: peer.userid,
+				id: peer.id,
 				host: _('username').textContent,
+				peers: getPeers()
 			});
 		});
 		conn.on('data', serverReviece);
@@ -167,9 +187,12 @@ createLobby = function() {
 
 serverReviece = function(data) {
 	if (data.type === 'message') {
-		chatAddMessage(data);
+		chatAddMessage(data, true);
 	} else if (data.type === 'hello') {
 		_('cardname-' + data.id).textContent = data.name;
+		var peer = getPeer(data.id);
+		peer.name = data.name;
+		peer.online = true;
 		broadcast({
 			type: 'join',
 			id: data.id,
@@ -193,7 +216,7 @@ joinLobby = function(lobbyId) {
 
 clientRecieve = function(data) {
 	if (data.type === 'message') {
-		chatAddMessage(data);
+		chatAddMessage(data, true);
 	} else if (data.type === 'welcome') {
 		myid = data.id;
 		_('hostname').textContent = data.host;
@@ -202,7 +225,10 @@ clientRecieve = function(data) {
 			id: myid,
 			name: _('username').textContent
 		});
+		data.peers.forEach(function(peer) {
+			addUser(peer.id, peer.name, false);
+		});
 	} else if (data.type === 'join') {
-		addUser(data.id, data.name);
+		addUser(data.id, data.name, false);
 	}
 };
