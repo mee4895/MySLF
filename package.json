@@ -2,11 +2,11 @@
   "name": "myslf",
   "version": "0.0.1",
   "description": "An implementation of the german game 'Stadt-Land-Fluss'",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "install": "bash install.sh",
-    "postinstall": "browserify -t browserify-css index.js | uglifyjs > game.js",
-    "start": "budo index.js --serve game.js --live -- -t browserify-css",
+    "postinstall": "browserify -t browserify-css app.js | uglifyjs > game.js",
+    "start": "budo app.js --serve game.js --live -- -t browserify-css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
