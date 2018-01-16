@@ -1,7 +1,8 @@
 require('./app.css');
 var config = require('./config.js');
 var Peer = require('peerjs');
-var jquery = require("jquery");
+var jquery = require('jquery');
+var game = require('./slf.js');
 
 //
 // Cache
@@ -90,6 +91,7 @@ _('create').addEventListener('click', function() {
 	_('lobbycode').textContent = lobbyId;
 	_('lobbyselect').hidden = true;
 	_('lobby').hidden = false;
+	_('startgame').addEventListener('click', startGame);
 });
 _('join').addEventListener('click', function() {
 	_('username').hidden = false;
@@ -100,6 +102,7 @@ _('join').addEventListener('click', function() {
 	_('lobbycode').textContent = _('lobbyid').value;
 	_('lobbyselect').hidden = true;
 	_('lobby').hidden = false;
+	_('startgame').disabled = true;
 });
 
 // Lobby
@@ -128,6 +131,10 @@ addUser = function(userid, username, kick) {
 		disabled: true
 	}).text('Player'))));
 };
+gameView = function() {
+	_('lobby').hidden = true;
+	_('game').hidden = false;
+}
 
 //
 // Server
@@ -184,13 +191,12 @@ createLobby = function() {
 		peers.push(peer);
 	});
 
+	game.initSettings(true);
+
 	return lobbyId;
 };
-
 serverReviece = function(data) {
-	if (data.type === 'message') {
-		chatAddMessage(data, true);
-	} else if (data.type === 'hello') {
+	if (data.type === 'hello') {
 		_('cardname-' + data.id).textContent = data.name;
 		var peer = getPeer(data.id);
 		peer.name = data.name;
@@ -200,8 +206,20 @@ serverReviece = function(data) {
 			id: data.id,
 			name: data.name
 		});
+	} else if (data.type === 'message') {
+		chatAddMessage(data, true);
+	} else if (data.type === 'game') {
+		game.gameData(data);
 	}
 };
+startGame = function() {
+	gameView();
+	broadcast({
+		type: 'run',
+		settings: game.getSettings()
+	});
+	game.runGame(game.getSettings())
+}
 
 //
 // Client
@@ -212,14 +230,13 @@ joinLobby = function(lobbyId) {
 	var peer = new Peer({key: config.apiKey});
 	hostConn = peer.connect('myslf-' + lobbyId);
 	hostConn.on('open', function() {
+		game.initSettings(false);
 	});
 	hostConn.on('data', clientRecieve);
 };
 
 clientRecieve = function(data) {
-	if (data.type === 'message') {
-		chatAddMessage(data, true);
-	} else if (data.type === 'welcome') {
+	if (data.type === 'welcome') {
 		myid = data.id;
 		_('hostname').textContent = data.host;
 		hostConn.send({
@@ -232,5 +249,14 @@ clientRecieve = function(data) {
 		});
 	} else if (data.type === 'join') {
 		addUser(data.id, data.name, false);
+	} else if (data.type === 'message') {
+		chatAddMessage(data, true);
+	} else if (data.type === 'update') {
+		game.updateSettings(data.data);
+	} else if (data.type === 'run') {
+		gameView();
+		game.runGame(data.settings);
+	} else if (data.type === 'game') {
+		game.gameData(data);
 	}
 };
