@@ -26,3 +26,9 @@ simply staticly host the `game.js` `game.css` and `index.html` files on any webs
 or
 
 open the `index.html` file in any browser
+
+---
+
+made by Tobias Wältken
+
+[![powered by electricity](http://forthebadge.com/images/badges/powered-by-electricity.svg)](http://forthebadge.com)
