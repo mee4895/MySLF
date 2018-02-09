@@ -171,6 +171,13 @@ settingsBroadcast = function(type, data) {
 		data: data
 	});
 };
+gameBroadcast = function(type, data) {
+	broadcast({
+		type: 'game',
+		utype: type,
+		data: data
+	});
+};
 createLobby = function() {
 	var lobbyId = Math.random().toString(36).substring(3, 8);
 	var host = new Peer('myslf-' + lobbyId, {key: config.apiKey});
@@ -216,7 +223,7 @@ serverReviece = function(data) {
 	} else if (data.type === 'message') {
 		chatAddMessage(data, true);
 	} else if (data.type === 'game') {
-		game.gameData(data, $, _);
+		game.gameData(true, data.utype, data.data, gameBroadcast, $, _);
 	}
 };
 startGame = function() {
@@ -225,7 +232,7 @@ startGame = function() {
 		type: 'run',
 		settings: game.getSettings($, _)
 	});
-	game.runGame(game.getSettings($, _), $, _);
+	game.runGame(true, game.getSettings($, _), gameBroadcast, $, _);
 }
 
 //
@@ -262,8 +269,20 @@ clientRecieve = function(data) {
 		game.updateSettings(data.utype, data.data, $, _);
 	} else if (data.type === 'run') {
 		gameView();
-		game.runGame(data.settings, $, _);
+		game.runGame(false, data.settings, function(type, data) {
+			hostConn.send({
+				type: 'game',
+				utype: type,
+				data: data
+			});
+		}, $, _);
 	} else if (data.type === 'game') {
-		game.gameData(data, $, _);
+		game.gameData(false, data.utype, data.data, function(type, data) {
+			hostConn.send({
+				type: 'game',
+				utype: type,
+				data: data
+			});
+		}, $, _);
 	}
 };

@@ -71,7 +71,7 @@ module.exports = {
 	getSettings: function($, _) {
 		var categorys = [];
 		var domElements = document.getElementsByClassName("categorySetting");
-		for(var i = 0; i < domElements.length; i++) {
+		for (var i = 0; i < domElements.length; i++) {
 			categorys.push(domElements[i].value);
 		};
 		return {
@@ -81,16 +81,55 @@ module.exports = {
 		}
 	},
 
-	runGame: function(settings, $, _) {
-		$('#game').text(JSON.stringify(settings));
+	runGame: function(host, settings, broadcast, $, _) {
+		$('#game').append(`
+			<h1 class="ml-2 mb-4">
+				Round <span id="roundCounter"></span>:
+			</h1>
+			<div class="card mb-4">
+				<div class="card-body">
+					<h1 id="roundLetter" class="display-1" style="text-align:center;"></h1>
+				</div>
+			</div>
+			<div id="gameCategorys" class="form mb-4"></div>
+			<button id="endRound" class="btn btn-success btn-lg btn-block">Finish</button>
+		`);
+		for (var i = 0; i < settings.categorys.length; i++) {
+			$('#gameCategorys').append(`
+				<div id="gameCategoryBlock_${i}" class="form-group">
+					<label>${settings.categorys[i]}:</label>
+					<input id="gameCategoryInput_${i}" type="text" class="form-control game-category">
+				</div>
+			`);
+		}
+		$('#endRound').on('click', function() {
+			broadcast('end', {});
+		});
+		if (host) {
+			var data = {
+				number: 1,
+				letter: settings.letters[Math.floor(Math.random() * settings.letters.length)]
+			};
+			startRound(data.number, data.letter, $, _);
+			broadcast('start', data);
+		}
 	},
 
-	gameData: function(data, $, _) {
+	gameData: function(host, type, data, broadcast, $, _) {
+		if (type === 'start') {
+			startRound(data.number, data.letter, $, _);
+		} else if (type === 'end') {
+			if (host) {
+				broadcast('end', {});
+				startRound(2, '-', $, _)
+			} else {
+				startRound(2, '-', $, _);
+			}
+		}
 	}
 };
 
 var count = 1;
-
 addCategorySetting = function(host, broadcast, $, _) {
 	$('#gamesettings').append(`
 		<div id="categoryblock_${count}" class="form-group input-group">
@@ -121,4 +160,14 @@ addCategorySetting = function(host, broadcast, $, _) {
 		})(count));
 	}
 	return count++;
+}
+
+startRound = function(number, letter, $, _) {
+	window.scrollTo(0, 0);
+	$('#roundCounter').text(number);
+	$('#roundLetter').text(letter);
+	var domElements = document.getElementsByClassName("game-category");
+	for (var i = 0; i < domElements.length; i++) {
+		domElements[i].value = '';
+	};
 }
