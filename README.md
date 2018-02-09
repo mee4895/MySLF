@@ -29,6 +29,6 @@ open the `index.html` file in any browser
 
 ---
 
-made by Tobias Wältken
-
+[![built by developers](http://forthebadge.com/images/badges/built-by-developers.svg)](http://forthebadge.com)
+[![for you](http://forthebadge.com/images/badges/for-you.svg)](http://forthebadge.com)
 [![powered by electricity](http://forthebadge.com/images/badges/powered-by-electricity.svg)](http://forthebadge.com)
