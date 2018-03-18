@@ -82,17 +82,20 @@ module.exports = {
 	},
 
 	runGame: function(host, settings, broadcast, $, _) {
+		gameSettings = settings;
 		$('#game').append(`
 			<h1 class="ml-2 mb-4">
-				Round <span id="roundCounter"></span>:
+				<span id="headerRound">Round </span><span id="headerSolution" hidden>Solution </span><span id="roundCounter"></span>:
 			</h1>
-			<div class="card mb-4">
+			<div id="roundLetterBox" class="card mb-4">
 				<div class="card-body">
 					<h1 id="roundLetter" class="display-1" style="text-align:center;"></h1>
 				</div>
 			</div>
 			<div id="gameCategorys" class="form mb-4"></div>
+			<div id="gameSolutions" class="form mb-4" hidden></div>
 			<button id="endRound" class="btn btn-success btn-lg btn-block">Finish</button>
+			<button id="startRound" class="btn btn-success btn-lg btn-block" ${host ? '' : 'disabled'} hidden>Next!</button>
 		`);
 		for (var i = 0; i < settings.categorys.length; i++) {
 			$('#gameCategorys').append(`
@@ -101,17 +104,35 @@ module.exports = {
 					<input id="gameCategoryInput_${i}" type="text" class="form-control game-category">
 				</div>
 			`);
+			$('#gameSolutions').append(`
+				<div id="gameSolutionBlock_${i}" class="form-group">
+					<label>${settings.categorys[i]}:</label>
+					<div id="gameSolutionSubSet_${i}"></div>
+				</div>
+			`);
 		}
 		$('#endRound').on('click', function() {
 			broadcast('end', {});
+			if (host) {
+				endRound(host, broadcast, $, _);
+			}
 		});
 		if (host) {
 			var data = {
-				number: 1,
+				number: gamePossition++,
 				letter: settings.letters[Math.floor(Math.random() * settings.letters.length)]
 			};
 			startRound(data.number, data.letter, $, _);
 			broadcast('start', data);
+
+			$('#startRound').on('click', function() {
+				var data = {
+					number: gamePossition++,
+					letter: settings.letters[Math.floor(Math.random() * settings.letters.length)]
+				};
+				startRound(data.number, data.letter, $, _);
+				broadcast('start', data);
+			});
 		}
 	},
 
@@ -120,14 +141,20 @@ module.exports = {
 			startRound(data.number, data.letter, $, _);
 		} else if (type === 'end') {
 			if (host) {
-				broadcast('end', {});
-				startRound(2, '-', $, _)
-			} else {
-				startRound(2, '-', $, _);
+				broadcast(type, data);
 			}
+			endRound(host, broadcast, $, _);
+		} else if (type === 'solution') {
+			if (host) {
+				broadcast(type, data);
+			}
+			addSolution(data.name, data.data, $, _);
 		}
 	}
 };
+
+var gamePossition = 1;
+var gameSettings = {};
 
 var count = 1;
 addCategorySetting = function(host, broadcast, $, _) {
@@ -170,4 +197,51 @@ startRound = function(number, letter, $, _) {
 	for (var i = 0; i < domElements.length; i++) {
 		domElements[i].value = '';
 	};
+	_('headerRound').hidden = false;
+	_('headerSolution').hidden = true;
+	_('roundLetterBox').hidden = false;
+	_('gameCategorys').hidden = false;
+	_('gameSolutions').hidden = true;
+	_('endRound').hidden = false;
+	_('startRound').hidden = true;
+}
+
+endRound = function(host, broadcast, $, _) {
+	window.scrollTo(0, 0);
+	for (var i = 0; i < gameSettings.categorys.length; i++) {
+		$('#gameSolutionSubSet_' + i).empty();
+	}
+
+	var solution = getSolution($, _);
+	broadcast('solution', { 'name': _('username').textContent, 'data': solution });
+	if (host) {
+		addSolution(_('username').textContent, solution, $, _);
+	}
+
+	_('headerRound').hidden = true;
+	_('headerSolution').hidden = false;
+	_('roundLetterBox').hidden = true;
+	_('gameCategorys').hidden = true;
+	_('gameSolutions').hidden = false;
+	_('endRound').hidden = true;
+	_('startRound').hidden = false;
+}
+
+getSolution = function($, _) {
+	var solution = [];
+	for (var i = 0; i < gameSettings.categorys.length; i++) {
+		solution.push(_('gameCategoryInput_' + i).value)
+	}
+	return solution;
+}
+
+addSolution = function(name, data, $, _) {
+	for (var i = 0; i < data.length; i++) {
+		$('#gameSolutionSubSet_' + i).append(`
+			<div class="input-group">
+				<span class="input-group-text">${name}:</span>
+				<input type="text" class="form-control" value="${data[i]}" disabled>
+			</div>
+		`);
+	}
 }

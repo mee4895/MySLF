@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "install": "bash install.sh",
-    "postinstall": "browserify -t browserify-css app.js | uglifyjs > game.js",
+    "postinstall": "browserify -t browserify-css app.js > game.js",
     "start": "budo app.js --serve game.js --live -- -t browserify-css",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
